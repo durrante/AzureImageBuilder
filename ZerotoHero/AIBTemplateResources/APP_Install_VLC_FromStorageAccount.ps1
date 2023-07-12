@@ -13,7 +13,7 @@
 #>
 # Define Applications and directories
 $appName = 'VLC' #Edit ME
-$drive = 'C:\Temp'
+$drive = 'C:\AIB\Temp'
 $LocalPath = Join-Path $drive $appName
 $LogDrive = 'C:\AIBAppLogs'
 $LogPath = Join-Path $LogDrive "${appName}_install.log"
