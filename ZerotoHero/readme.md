@@ -9,7 +9,7 @@ Example scenario company objectives:
 
 	• Ensure image lifecycle and validation controls are in place.
 	• Ensure that source content is locked down and not available to public (licences, organisational information)
-	• Use Windows 11 Multisession from the marketplace with M365 Gen2
+	• Use Windows 11 22H2 Multisession + M365 Apps Gen2 Image from the marketplace
 	• Install the following applications:
 		○ Google Chrome
 		○ Visual Studio Code
@@ -19,7 +19,7 @@ Example scenario company objectives:
 		○ VLC Player
 	• Configure the following:
 		○ Set Default Start menu layout
-		○ Remove predefined list of Appx Packages
+		○ Remove a predefined list of Appx Packages
 		○ Set default wallpaper and lockscreen
 		○ Fix Sysprep
 		○ Delete C:\Temp folder
