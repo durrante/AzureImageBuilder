@@ -103,7 +103,7 @@ Set-Location $LocalPath
 Install-Application -url 'https://someurl.com' -fileName 'setup.msi' -extraMsiArguments @("/l*v", "install.log", "/norestart")
 ##>
 
-#  Client installation (Note: edit this to suit your application needs)
+#  Client installation (non-msi versions) (Note: edit this to suit your application needs)
 LogWrite "AIB Customisation: Installing $appName"
 Install-Application -url 'https://<storageaccountname>.blob.core.windows.net/applications/VLC/vlc-3.0.18-win64.exe' -fileName 'vlc-3.0.18-win64.exe' -arguments @('/S')
 
