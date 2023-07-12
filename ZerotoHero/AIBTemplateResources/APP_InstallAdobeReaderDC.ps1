@@ -36,7 +36,7 @@ ElseIf ($PublishedEvergreen.Version -gt $InstalledEvergreen.Version) {
 
 # Download the latest version of Adobe Reader DC using the Evergreen module
 $AdobeReaderInfo = Get-EvergreenApp -Name AdobeAcrobatReaderDC | Where-Object { $_.Architecture -eq "x64" }
-$AdobeReaderInstallerPath = $AdobeReaderInfo | Save-EvergreenApp -Path "C:\Temp\AdobeReaderDC"
+$AdobeReaderInstallerPath = $AdobeReaderInfo | Save-EvergreenApp -Path "C:\AIBTemp\AdobeReaderDC"
 
 # Install Adobe Reader DC
 Start-Process -FilePath $AdobeReaderInstallerPath -ArgumentList "/sAll /msi /norestart /quiet ALLUSERS=1 EULA_ACCEPT=YES" -Wait -Verbose
