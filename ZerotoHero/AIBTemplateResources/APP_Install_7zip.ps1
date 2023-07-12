@@ -36,7 +36,7 @@ ElseIf ($PublishedEvergreen.Version -gt $InstalledEvergreen.Version) {
 
 # Download the latest version of 7-Zip using the Evergreen module
 $7ZipInfo = Get-EvergreenApp -Name 7Zip | Where-Object { $_.Architecture -eq "x64" -and $_.Type -eq "msi" }
-$7ZipInstallerPath = $7ZipInfo | Save-EvergreenApp -Path "C:\Temp\7Zip"
+$7ZipInstallerPath = $7ZipInfo | Save-EvergreenApp -Path "C:\AIBTemp\7Zip"
 
 # Install 7-Zip
 Start-Process -FilePath msiexec.exe -ArgumentList "/I `"$7ZipInstallerPath`" /qn" -Wait -Verbose
