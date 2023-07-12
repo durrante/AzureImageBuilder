@@ -84,13 +84,13 @@
     # Get location for desired Azure Region (Use this only if you're unsure which location name to use for the next steps)
     Get-AzLocation | Select-Object Location, DisplayName, PhysicalLocation, GeographyGroup | Sort-Object Location
 
-    # Destination image resource group name
-    $AIBResourceGroup = 'rg-aib-uks-002'
+    # Destination image resource group name # Change this to match your environment standards
+    $AIBResourceGroup = 'change me'
 
     # Azure region
     $location = 'uksouth'
 
-    # Tags
+    # Tags # these are listed as example only, change them to meet your needs
     $Tags = @{
         "ApplicationName" = "AIB"
         "BusinessUnit" = "IT"
@@ -101,8 +101,8 @@
 
     #AIBRoleIdentityName
     $imageRoleDefName = "Azure Image Builder Image Def Role"
-    #AIB Managed Identity Name
-    $identityName = "AIBIdentity001"
+    #AIB Managed Identity Name # change this, must be unique, e.g. AIBIdentity001 or date stamp it.
+    $identityName = "Change me"
 
     # Your Azure Subscription ID
     $subscriptionID = (Get-AzContext).Subscription.Id
