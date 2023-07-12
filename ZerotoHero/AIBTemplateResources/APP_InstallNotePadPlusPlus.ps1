@@ -36,7 +36,7 @@ ElseIf ($PublishedEvergreen.Version -gt $InstalledEvergreen.Version) {
 
 # Download the latest version of Notepad++ using the Evergreen module
 $NotepadppInfo = Get-EvergreenApp -Name NotepadPlusPlus | Where-Object { $_.Architecture -eq "x64" -and $_.Type -eq "exe" }
-$NotepadppInstallerPath = $NotepadppInfo | Save-EvergreenApp -Path "C:\Temp\notepadpp"
+$NotepadppInstallerPath = $NotepadppInfo | Save-EvergreenApp -Path "C:\AIBTemp\notepadpp"
 
 # Install Notepad++
 Start-Process -FilePath $NotepadppInstallerPath -ArgumentList "/S" -Wait -Verbose
