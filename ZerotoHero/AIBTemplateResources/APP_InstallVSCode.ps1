@@ -36,7 +36,7 @@ ElseIf ($PublishedEvergreen.Version -gt $InstalledEvergreen.Version) {
 
 # Download the latest stable version of Visual Studio Code using the Evergreen module
 $VSCodeInfo = Get-EvergreenApp -Name MicrosoftVisualStudioCode | Where-Object { $_.Architecture -eq "x64" -and $_.Channel -eq "Stable" -and $_.Platform -eq "win32-x64" }
-$VSCodeInstallerPath = $VSCodeInfo | Save-EvergreenApp -Path "C:\Temp\VSCode"
+$VSCodeInstallerPath = $VSCodeInfo | Save-EvergreenApp -Path "C:\AIBTemp\VSCode"
 
 # Install Visual Studio Code
 Start-Process -FilePath $VSCodeInstallerPath -ArgumentList "/VERYSILENT /NORESTART /MERGETASKS=!runcode" -Wait -Verbose
