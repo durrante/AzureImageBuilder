@@ -5,7 +5,7 @@ Playlist:
 
 Example scenario company objectives:
 
-We are using Azure Virtual Desktop and we want to simplify image creation and distribution, organisation requires the following:
+	We are using Azure Virtual Desktop and we want to simplify image creation and distribution, organisation requires the following:
 
 	• Ensure image lifecycle and validation controls are in place.
 	• Ensure that source content is locked down and not available to public (licences, organisational information)
