@@ -1,3 +1,16 @@
+<#
+.SYNOPSIS
+    This script downloads and installs VLC media player from a specified URL.
+
+.DESCRIPTION
+    This script will download setup files from a URL, such as a storage account, unzip it if required, install the application
+    whilst logging all events into log files found in c:\aiblogs and then finally clean up previously downloaded set-up files.
+
+    This script was written by Alex Durrant. You can find more of his work at https://letsconfigmgr.com
+    
+.EXAMPLE
+    .\APP_Install_VLC_FromStorageAccount.ps1
+#>
 # Define Applications and directories
 $appName = 'VLC' #Edit ME
 $drive = 'C:\Temp'
