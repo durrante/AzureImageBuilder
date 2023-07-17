@@ -40,6 +40,28 @@
     # Set subscription (use this to change subscription, if needed - Note: Window appears in background)
     Get-AzSubscription | Out-Gridview -PassThru | Select-AzSubscription
 
+## Global Variables
+    # Get location for desired Azure Region (Use this only if you're unsure which location name to use for the next steps)
+    Get-AzLocation | Select-Object Location, DisplayName, PhysicalLocation, GeographyGroup | Sort-Object Location
+
+    # Destination image resource group name 
+    $AIBResourceGroup = 'change me' # Change this to match your environment standards, e.g. rg-aib-uks-001
+
+    # Azure region 
+    $location = 'uksouth' # change this as required.
+
+    # Tags # these are listed as example only, change them to meet your needs
+    $Tags = @{
+        "ApplicationName" = "AIB"
+        "BusinessUnit" = "IT"
+        "Env" = "Prod"
+        "DR" = "Essential"
+        "Owner" = "youremail@domain.com"
+    }
+
+## Create Resource Group
+    New-AzResourceGroup -Name $imageResourceGroup -Location $location -Tag $Tags
+
 ## Set Resource Providers
     # Define an array of provider namespaces
     $providerNamespaces = @(
@@ -80,37 +102,15 @@
         Write-Output "All resource providers are already registered."
     }
 
-## Variables for Managed Identity
-    # Get location for desired Azure Region (Use this only if you're unsure which location name to use for the next steps)
-    Get-AzLocation | Select-Object Location, DisplayName, PhysicalLocation, GeographyGroup | Sort-Object Location
-
-    # Destination image resource group name # Change this to match your environment standards, e.g. rg-aib-uks-001
-    $AIBResourceGroup = 'change me'
-
-    # Azure region # change this as required.
-    $location = 'uksouth'
-
-    # Tags # these are listed as example only, change them to meet your needs
-    $Tags = @{
-        "ApplicationName" = "AIB"
-        "BusinessUnit" = "IT"
-        "Env" = "Prod"
-        "DR" = "Essential"
-        "Owner" = "youremail@domain.com"
-    }
-
-    #AIBRoleIdentityName
+## Create Managed Identity & AIB Role
+    # AIBRoleIdentityName
     $imageRoleDefName = "Azure Image Builder Image Def Role"
-    #AIB Managed Identity Name # change this, must be unique, e.g. AIBIdentity001 or date stamp it.
+    # AIB Managed Identity Name # change this, must be unique, e.g. AIBIdentity001 or date stamp it.
     $identityName = "Change me"
 
     # Your Azure Subscription ID
     $subscriptionID = (Get-AzContext).Subscription.Id
     Write-Output $subscriptionID
-
-## Create User Identity
-    # Create Resource Group
-    New-AzResourceGroup -Name $imageResourceGroup -Location $location -Tag $Tags
 
     # Create Managed Identity
     New-AzUserAssignedIdentity -ResourceGroupName $AIBResourceGroup -Name $identityName -Location $location -Tag $Tags
@@ -143,9 +143,24 @@
       }
       New-AzRoleAssignment @RoleAssignParams
 
+## Create Azure Compute Gallery
+    # Create a new Azure Compute Gallery
+    $galleryName = "ACGUKS002" # Replace with your desired gallery name
+    $gallery = New-AzGallery -GalleryName $galleryName -ResourceGroupName $resourcegroupname -Location $location
+
+    # Create a new Azure Compute Gallery Image Definition
+    $imageDefinitionName = "Windows11AVD" # Replace with your desired image definition name
+    $osType = "Windows" # Replace with your desired OS type (Windows or Linux)
+    $publisher = "LetsConfigMgr" # Replace with your desired publisher name
+    $offer = "Windows11Multi" # Replace with your desired offer name
+    $sku = "M365_Gen2" # Replace with your desired SKU name
+
+    $imageDefinition = New-AzGalleryImageDefinition -GalleryName $galleryName -ResourceGroupName $resourcegroupname -Location $location -Name $imageDefinitionName -OsState "Generalized" -OsType $osType -Publisher $publisher -Offer $offer -Sku $sku
+
+
 ## Create vNET for AIB
     # vNET Variables (Note: Change where required).
-    $vnetName = "vnet-aib-uks-001"
+    $vnetName = "vnet-aib-uks-002"
     $subnetName = "AIBSubnet"
     $ResourceGroupName = $ImageResourceGroup
 
