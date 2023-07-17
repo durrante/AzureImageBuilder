@@ -10,6 +10,7 @@ Example scenario company objectives:
 	• Ensure image lifecycle and validation controls are in place.
 	• Ensure that source content is locked down and not available to the public (licences, organisational information)
 	• Use Windows 11 22H2 Multisession + M365 Apps Gen2 Image from the marketplace
+ 	• Ensure images support vVPM and Secure Boot (aka Trusted Launch)
 	• Install the following applications:
 		○ Google Chrome
 		○ Visual Studio Code
