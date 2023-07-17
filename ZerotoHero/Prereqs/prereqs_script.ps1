@@ -173,14 +173,14 @@
 
     # Create NSG
     $networkSecurityGroup = New-AzNetworkSecurityGroup -ResourceGroupName $ResourceGroupName `
-    -Location $location -Name "nsg-$subnetname" -SecurityRules 
+    -Location $location -Name "nsg-$subnetname"
 
     # Create a subnet configuration
     $subnetConfig = New-AzVirtualNetworkSubnetConfig -Name $subnetName -AddressPrefix 192.168.1.0/24
     
     # Create a virtual network
     New-AzVirtualNetwork -ResourceGroupName $resourceGroupName -Location $location `
-      -Name $vnetName -AddressPrefix 192.168.0.0/16 -Subnet $subnetConfig -Tag $tags -Debug
+      -Name $vnetName -AddressPrefix 192.168.0.0/16 -Subnet $subnetConfig -Tag $tags
 
 ## Create Storage Account
     # Define parameters for the storage account
