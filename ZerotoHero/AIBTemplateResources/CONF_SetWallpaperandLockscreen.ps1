@@ -12,10 +12,10 @@ if ("$env:PROCESSOR_ARCHITEW6432" -ne "ARM64")
 }
 
 # Define paths, URLs, and file locations
-$RegistryPath = "HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\PersonalizationCSP"
+$RegistryPath = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\PersonalizationCSP"
 $BackgroundImageURL = '<URL TO YOUR BACKGROUND IMAGE>'
 $LockScreenImageURL = '<URL TO YOUR LOCKSCREEN IMAGE>'
-$ImageFolder = "c:\\Wallpapers"
+$ImageFolder = "c:\Wallpapers"
 $BackgroundImageFile = Join-Path -Path $ImageFolder -ChildPath 'desktop.jpg'
 $LockScreenImageFile = Join-Path -Path $ImageFolder -ChildPath 'lockscreen.jpg'
 
