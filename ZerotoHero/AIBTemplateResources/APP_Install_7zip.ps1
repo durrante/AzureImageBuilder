@@ -10,8 +10,11 @@
     The Evergreen module was developed by Aaron Parker. More details can be found at https://stealthpuppy.com/evergreen/
 
 .EXAMPLE
-    .\AVD_APP_Install7Zip.ps1
+    .\APP_Install7Zip.ps1
 #>
+
+# Set execution policy for the current process
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force -ErrorAction SilentlyContinue
 
 # Trust PowerShell Gallery
 If ((Get-PSRepository | Where-Object { $_.Name -eq "PSGallery" -and $_.InstallationPolicy -ne "Trusted" })) {
@@ -36,7 +39,7 @@ ElseIf ($PublishedEvergreen.Version -gt $InstalledEvergreen.Version) {
 
 # Download the latest version of 7-Zip using the Evergreen module
 $7ZipInfo = Get-EvergreenApp -Name 7Zip | Where-Object { $_.Architecture -eq "x64" -and $_.Type -eq "msi" }
-$7ZipInstallerPath = $7ZipInfo | Save-EvergreenApp -Path "C:\AIBTemp\7Zip"
+$7ZipInstallerPath = $7ZipInfo | Save-EvergreenApp -Path "C:\Temp\7Zip"
 
 # Install 7-Zip
 Start-Process -FilePath msiexec.exe -ArgumentList "/I `"$7ZipInstallerPath`" /qn" -Wait -Verbose
