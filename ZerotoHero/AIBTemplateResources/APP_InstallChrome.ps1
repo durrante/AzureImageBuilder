@@ -10,8 +10,11 @@
     The Evergreen module was developed by Aaron Parker. More details can be found at https://stealthpuppy.com/evergreen/
 
 .EXAMPLE
-    .\AVD_APP_InstallChrome.ps1
+    .\APP_InstallChrome.ps1
 #>
+
+# Set execution policy for the current process
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force -ErrorAction SilentlyContinue
 
 # Trust PowerShell Gallery
 If ((Get-PSRepository | Where-Object { $_.Name -eq "PSGallery" -and $_.InstallationPolicy -ne "Trusted" })) {
@@ -36,7 +39,7 @@ ElseIf ($PublishedEvergreen.Version -gt $InstalledEvergreen.Version) {
 
 # Download the latest stable version of Google Chrome using the Evergreen module
 $ChromeInfo = Get-EvergreenApp -Name GoogleChrome | Where-Object { $_.Architecture -eq "x64" -and $_.Channel -eq "Stable" -and $_.Type -eq "msi" }
-$ChromeInstallerPath = $ChromeInfo | Save-EvergreenApp -Path "C:\AIBTemp\Chrome"
+$ChromeInstallerPath = $ChromeInfo | Save-EvergreenApp -Path "C:\Temp\Chrome"
 
 # Install Google Chrome
 Start-Process -FilePath msiexec.exe -ArgumentList "/I `"$ChromeInstallerPath`" /quiet" -Wait -Verbose
