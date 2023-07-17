@@ -45,7 +45,7 @@
     Get-AzLocation | Select-Object Location, DisplayName, PhysicalLocation, GeographyGroup | Sort-Object Location
 
     # Destination image resource group name 
-    $AIBResourceGroup = 'change me' # Change this to match your environment standards, e.g. rg-aib-uks-001
+    $AIBResourceGroup = 'rg-aib-uks-002' # Change this to match your environment standards, e.g. rg-aib-uks-001
 
     # Azure region 
     $location = 'uksouth' # change this as required.
@@ -56,11 +56,11 @@
         "BusinessUnit" = "IT"
         "Env" = "Prod"
         "DR" = "Essential"
-        "Owner" = "youremail@domain.com"
+        "Owner" = "Alex.Durrant@letsconfigmgr.com"
     }
 
 ## Create Resource Group
-    New-AzResourceGroup -Name $imageResourceGroup -Location $location -Tag $Tags
+    New-AzResourceGroup -Name $AIBResourceGroup -Location $location -Tag $Tags
 
 ## Set Resource Providers
     # Define an array of provider namespaces
