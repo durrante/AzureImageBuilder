@@ -45,7 +45,7 @@
     Get-AzLocation | Select-Object Location, DisplayName, PhysicalLocation, GeographyGroup | Sort-Object Location
 
     # Destination image resource group name 
-    $AIBResourceGroup = 'rg-aib-uks-002' # Change this to match your environment standards, e.g. rg-aib-uks-001
+    $ResourceGroupName = 'rg-aib-uks-002' # Change this to match your environment standards, e.g. rg-aib-uks-001
 
     # Azure region 
     $location = 'uksouth' # change this as required.
@@ -60,7 +60,7 @@
     }
 
 ## Create Resource Group
-    New-AzResourceGroup -Name $AIBResourceGroup -Location $location -Tag $Tags
+    New-AzResourceGroup -Name $ResourceGroupName -Location $location -Tag $Tags
 
 ## Set Resource Providers
     # Define an array of provider namespaces
@@ -106,18 +106,18 @@
     # AIBRoleIdentityName
     $imageRoleDefName = "Azure Image Builder Image Def Role"
     # AIB Managed Identity Name # change this, must be unique, e.g. AIBIdentity001 or date stamp it.
-    $identityName = "Change me"
+    $identityName = "AIBIdentity001"
 
     # Your Azure Subscription ID
     $subscriptionID = (Get-AzContext).Subscription.Id
     Write-Output $subscriptionID
 
     # Create Managed Identity
-    New-AzUserAssignedIdentity -ResourceGroupName $AIBResourceGroup -Name $identityName -Location $location -Tag $Tags
+    New-AzUserAssignedIdentity -ResourceGroupName $ResourceGroupName -Name $identityName -Location $location -Tag $Tags
 
     # Store Identity Resource and Principle ID's in variables
-    $identityNameResourceId = (Get-AzUserAssignedIdentity -ResourceGroupName $AIBResourceGroup -Name $identityName).Id
-    $identityNamePrincipalId = (Get-AzUserAssignedIdentity -ResourceGroupName $AIBResourceGroup -Name $identityName).PrincipalId
+    $identityNameResourceId = (Get-AzUserAssignedIdentity -ResourceGroupName $ResourceGroupName -Name $identityName).Id
+    $identityNamePrincipalId = (Get-AzUserAssignedIdentity -ResourceGroupName $ResourceGroupName -Name $identityName).PrincipalId
 
 ## Assign Permissions to Managed Identity
     # Download and Modify Permissions JSON for AIB Role
@@ -128,7 +128,7 @@
 
     $Content = Get-Content -Path $myRoleImageCreationPath -Raw
     $Content = $Content -replace '<subscriptionID>', $subscriptionID
-    $Content = $Content -replace '<rgName>', $AIBResourceGroup
+    $Content = $Content -replace '<rgName>', $ResourceGroupName
     $Content = $Content -replace 'Azure Image Builder Service Image Creation Role', $imageRoleDefName
     $Content | Out-File -FilePath $myRoleImageCreationPath -Force
 
@@ -139,30 +139,39 @@
     $RoleAssignParams = @{
         ObjectId = $identityNamePrincipalId
         RoleDefinitionName = $imageRoleDefName
-        Scope = "/subscriptions/$subscriptionID/resourceGroups/$AIBResourceGroup"
+        Scope = "/subscriptions/$subscriptionID/resourceGroups/$ResourceGroupName"
       }
       New-AzRoleAssignment @RoleAssignParams
 
 ## Create Azure Compute Gallery
-    # Create a new Azure Compute Gallery
-    $galleryName = "ACGUKS002" # Replace with your desired gallery name
-    $gallery = New-AzGallery -GalleryName $galleryName -ResourceGroupName $resourcegroupname -Location $location
+    #ACG Variables
+    $GalleryName = 'ACGUKS002' # Change this to your desired gallery name
+    $imageDefName = 'Windows11AVD'# Change this to your desired image definition name
+    $GalleryParams = @{
+        GalleryName = $GalleryName
+        ResourceGroupName = $ResourceGroupName
+        Location = $location
+        Name = $imageDefName
+        OsState = 'generalized'
+        OsType = 'Windows' # Linux or Windows
+        Publisher = 'LetsConfigMgr' # Replace with your desired publisher name
+        Offer = 'Windows11Multi' # Replace with your desired offer name
+        Sku = 'M365+Gen2'# Replace with your desired SKU name
+        Tags = $Tags
+      }
 
-    # Create a new Azure Compute Gallery Image Definition
-    $imageDefinitionName = "Windows11AVD" # Replace with your desired image definition name
-    $osType = "Windows" # Replace with your desired OS type (Windows or Linux)
-    $publisher = "LetsConfigMgr" # Replace with your desired publisher name
-    $offer = "Windows11Multi" # Replace with your desired offer name
-    $sku = "M365_Gen2" # Replace with your desired SKU name
-
-    $imageDefinition = New-AzGalleryImageDefinition -GalleryName $galleryName -ResourceGroupName $resourcegroupname -Location $location -Name $imageDefinitionName -OsState "Generalized" -OsType $osType -Publisher $publisher -Offer $offer -Sku $sku
+     # Create a new Azure Compute Gallery
+    New-AzGallery -GalleryName $GalleryName -ResourceGroupName $ResourceGroupName -Location $location -Tag $Tags -Verbose
+    
+     # Create a new Azure Compute Gallery Image Definition
+    New-AzGalleryImageDefinition @GalleryParams -Verbose
+    
 
 
 ## Create vNET for AIB
     # vNET Variables (Note: Change where required).
     $vnetName = "vnet-aib-uks-002"
     $subnetName = "AIBSubnet"
-    $ResourceGroupName = $ImageResourceGroup
 
     # Create a subnet configuration
     $subnetConfig = New-AzVirtualNetworkSubnetConfig -Name $subnetName -AddressPrefix 192.168.1.0/24
