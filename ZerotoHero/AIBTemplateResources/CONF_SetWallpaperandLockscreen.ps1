@@ -3,8 +3,8 @@
 
 # Define paths, URLs, and file locations
 $RegistryPath = "HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\PersonalizationCSP"
-$BackgroundImageURL = '<URL TO YOUR BACKGROUND IMAGE'
-$LockScreenImageURL = '<URL TO YOUR LOCKSCREEN IMAGE'
+$BackgroundImageURL = '<URL TO YOUR BACKGROUND IMAGE>'
+$LockScreenImageURL = '<URL TO YOUR LOCKSCREEN IMAGE>'
 $ImageFolder = "c:\\Wallpapers"
 $BackgroundImageFile = Join-Path -Path $ImageFolder -ChildPath 'desktop.jpg'
 $LockScreenImageFile = Join-Path -Path $ImageFolder -ChildPath 'lockscreen.jpg'
