@@ -158,7 +158,12 @@
         Offer = 'Windows11Multi' # Replace with your desired offer name
         Sku = 'M365Gen2'# Replace with your desired SKU name
         Tag = $Tags
-      }
+        HyperVGeneration = "V2"
+        MinimumMemory = 8
+        MinimumVCPU = 2
+        disallowedDiskType = @("Standard_LRS")
+        Feature = @{Name='SecurityType';Value='TrustedLaunch'}
+           }
 
      # Create a new Azure Compute Gallery
     New-AzGallery -GalleryName $GalleryName -ResourceGroupName $ResourceGroupName -Location $location -Tag $Tags
