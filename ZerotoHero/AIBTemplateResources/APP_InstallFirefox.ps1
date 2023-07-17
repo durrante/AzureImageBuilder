@@ -39,7 +39,7 @@ ElseIf ($PublishedEvergreen.Version -gt $InstalledEvergreen.Version) {
 
 # Download the latest version of Mozilla Firefox using the Evergreen module
 $FirefoxInfo = Get-EvergreenApp -Name MozillaFirefox | Where-Object { $_.Architecture -eq "x64" -and $_.Channel -eq "LATEST_FIREFOX_VERSION" -and $_.Type -eq "msi" }
-$FirefoxInstallerPath = $FirefoxInfo | Save-EvergreenApp -Path "C:\Temp\Firefox"
+$FirefoxInstallerPath = $FirefoxInfo | Save-EvergreenApp -Path "C:\AIBTemp\Firefox"
 
 # Install Mozilla Firefox
 Start-Process -FilePath msiexec.exe -ArgumentList "/I `"$FirefoxInstallerPath`" /quiet" -Wait -Verbose
