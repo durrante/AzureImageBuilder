@@ -156,8 +156,8 @@
         OsType = 'Windows' # Linux or Windows
         Publisher = 'LetsConfigMgr' # Replace with your desired publisher name
         Offer = 'Windows11Multi' # Replace with your desired offer name
-        Sku = 'M365+Gen2'# Replace with your desired SKU name
-        Tags = $Tags
+        Sku = 'M365Gen2'# Replace with your desired SKU name
+        Tag = $Tags
       }
 
      # Create a new Azure Compute Gallery
@@ -165,20 +165,22 @@
     
      # Create a new Azure Compute Gallery Image Definition
     New-AzGalleryImageDefinition @GalleryParams -Verbose
-    
-
 
 ## Create vNET for AIB
     # vNET Variables (Note: Change where required).
     $vnetName = "vnet-aib-uks-002"
-    $subnetName = "AIBSubnet"
+    $subnetName = "snet-aib-uks-001"
+
+    # Create NSG
+    $networkSecurityGroup = New-AzNetworkSecurityGroup -ResourceGroupName $ResourceGroupName `
+    -Location $location -Name "nsg-$subnetname" -SecurityRules 
 
     # Create a subnet configuration
     $subnetConfig = New-AzVirtualNetworkSubnetConfig -Name $subnetName -AddressPrefix 192.168.1.0/24
     
     # Create a virtual network
     New-AzVirtualNetwork -ResourceGroupName $resourceGroupName -Location $location `
-      -Name $vnetName -AddressPrefix 192.168.0.0/16 -Subnet $subnetConfig -Tag $tags
+      -Name $vnetName -AddressPrefix 192.168.0.0/16 -Subnet $subnetConfig -Tag $tags -Debug
 
 ## Create Storage Account
     # Define parameters for the storage account
