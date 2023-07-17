@@ -10,8 +10,11 @@
     The Evergreen module was developed by Aaron Parker. More details can be found at https://stealthpuppy.com/evergreen/
 
 .EXAMPLE
-    .\AVD_APP_InstallVSCode.ps1
+    .\APP_InstallVSCode.ps1
 #>
+
+# Set execution policy for the current process
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force -ErrorAction SilentlyContinue
 
 # Trust PowerShell Gallery
 If ((Get-PSRepository | Where-Object { $_.Name -eq "PSGallery" -and $_.InstallationPolicy -ne "Trusted" })) {
