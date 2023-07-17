@@ -39,7 +39,7 @@ ElseIf ($PublishedEvergreen.Version -gt $InstalledEvergreen.Version) {
 
 # Download the latest stable version of Google Chrome using the Evergreen module
 $ChromeInfo = Get-EvergreenApp -Name GoogleChrome | Where-Object { $_.Architecture -eq "x64" -and $_.Channel -eq "Stable" -and $_.Type -eq "msi" }
-$ChromeInstallerPath = $ChromeInfo | Save-EvergreenApp -Path "C:\Temp\Chrome"
+$ChromeInstallerPath = $ChromeInfo | Save-EvergreenApp -Path "C:\AIBTemp\Chrome"
 
 # Install Google Chrome
 Start-Process -FilePath msiexec.exe -ArgumentList "/I `"$ChromeInstallerPath`" /quiet" -Wait -Verbose
