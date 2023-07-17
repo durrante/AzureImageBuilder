@@ -16,7 +16,7 @@
         if ($CurrentVersion -lt $LatestVersion) {
             # If not up to date, update it
             Write-Output "Azure PowerShell module is not up to date. Updating..."
-            Install-Module -Name Az.Compute -AllowClobber -Force
+            Update-Module Az.* -Force
         } else {
             Write-Output "Azure PowerShell module is up to date."
         }
