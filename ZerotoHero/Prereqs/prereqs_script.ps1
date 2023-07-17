@@ -26,7 +26,7 @@
     if (!(Get-Module -Name Az)) {
         # If not imported, import it
         Write-Output "Az module not found in the current session. Importing..."
-        Import-Module -Name Az
+        Import-Module -Name Az -force
     } else {
         Write-Output "Az module is already imported into the current session."
     }
@@ -161,10 +161,10 @@
       }
 
      # Create a new Azure Compute Gallery
-    New-AzGallery -GalleryName $GalleryName -ResourceGroupName $ResourceGroupName -Location $location -Tag $Tags -Verbose
+    New-AzGallery -GalleryName $GalleryName -ResourceGroupName $ResourceGroupName -Location $location -Tag $Tags
     
      # Create a new Azure Compute Gallery Image Definition
-    New-AzGalleryImageDefinition @GalleryParams -Verbose
+    New-AzGalleryImageDefinition @GalleryParams
 
 ## Create vNET for AIB
     # vNET Variables (Note: Change where required).
@@ -176,31 +176,38 @@
     -Location $location -Name "nsg-$subnetname"
 
     # Create a subnet configuration
-    $subnetConfig = New-AzVirtualNetworkSubnetConfig -Name $subnetName -AddressPrefix 192.168.1.0/24
+    $subnetConfig = New-AzVirtualNetworkSubnetConfig -Name $subnetName -AddressPrefix 192.168.1.0/24 -NetworkSecurityGroup $networkSecurityGroup -ServiceEndpoint Microsoft.Storage
     
     # Create a virtual network
     New-AzVirtualNetwork -ResourceGroupName $resourceGroupName -Location $location `
-      -Name $vnetName -AddressPrefix 192.168.0.0/16 -Subnet $subnetConfig -Tag $tags
+      -Name $vnetName -AddressPrefix 192.168.0.0/16 -Subnet $subnetConfig -Tag $tags 
 
 ## Create Storage Account
     # Define parameters for the storage account
-    $storageAccountName = "mystorageaccount" # Change this, storage account name must be UNIQUE.
+    $storageAccountName = "staiblcmuks00001" # Change this, storage account name must be UNIQUE.
     $storageAccountSku = "Standard_LRS"
     
     # Create a storage account with no public access
     New-AzStorageAccount -ResourceGroupName $resourceGroupName -Name $storageAccountName `
         -Location $location -SkuName $storageAccountSku -EnableHttpsTrafficOnly $true `
-        -AllowBlobPublicAccess $false -Tag $tags
+        -AllowBlobPublicAccess $true -Tag $tags
     
-    # Allow access from the previously created virtual network (Note: you may want to add your external IP address too to upload content)
-    Set-AzStorageAccountNetworkRuleSet -ResourceGroupName $resourceGroupName -Name $storageAccountName `
-        -DefaultAction Deny -VirtualNetworkResourceId $(Get-AzVirtualNetwork -ResourceGroupName $resourceGroupName -Name $vnetName).Id
-    
+    # Allow access from the previously created virtual network         
+    $subnet = Get-AzVirtualNetwork -ResourceGroupName $ResourceGroupName -Name $vnetName | Get-AzVirtualNetworkSubnetConfig -Name "$subnetName"
+    Add-AzStorageAccountNetworkRule -ResourceGroupName $ResourceGroupName -Name $storageAccountName -VirtualNetworkResourceId $subnet.Id
+
+    # Add current client external IP to Storage Firewall (Note: This is completely optional and may not be required)
+    $CurrentExternalIP = (Invoke-WebRequest -uri "http://ifconfig.me/ip").Content
+    Add-AzStorageAccountNetworkRule -ResourceGroupName $ResourceGroupName -Name $storageAccountName -IPAddressOrRange $CurrentExternalIP
+
+    # Set Storage Account Network Firewall to Deny (aka Enabled from selected networks and IP address as previously network rules have been defined)
+    Update-AzStorageAccountNetworkRuleSet -ResourceGroupName $resourceGroupName -Name $storageAccountName -DefaultAction Deny
+
     # Get the storage account context
     $ctx = (Get-AzStorageAccount -ResourceGroupName $resourceGroupName -Name $storageAccountName).Context
     
     # Define parameters for the blob container
-    $containerName = "AzureImageBuilder"
+    $containerName = "azureimagebuilder" # Update this to match your requirements, Note: uppercase characters are not allowed.
     
     # Create a blob container with no public access
     New-AzStorageContainer -Name $containerName -Context $ctx -Permission Blob
