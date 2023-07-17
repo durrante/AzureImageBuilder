@@ -1,5 +1,5 @@
 # Reference: Alex Durrant's blog (https://letsconfigmgr.com)
-# Script to set desktop and lockscreen wallpapers on Windows machines
+# Script to download images from public storage URLs and set desktop and lockscreen wallpapers on Windows machines
 
 # Define paths, URLs, and file locations
 $RegistryPath = "HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\PersonalizationCSP"
