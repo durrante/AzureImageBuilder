@@ -80,14 +80,14 @@
         Write-Output "All resource providers are already registered."
     }
 
-## Variables
+## Variables for Managed Identity
     # Get location for desired Azure Region (Use this only if you're unsure which location name to use for the next steps)
     Get-AzLocation | Select-Object Location, DisplayName, PhysicalLocation, GeographyGroup | Sort-Object Location
 
-    # Destination image resource group name # Change this to match your environment standards
+    # Destination image resource group name # Change this to match your environment standards, e.g. rg-aib-uks-001
     $AIBResourceGroup = 'change me'
 
-    # Azure region
+    # Azure region # change this as required.
     $location = 'uksouth'
 
     # Tags # these are listed as example only, change them to meet your needs
@@ -142,3 +142,39 @@
         Scope = "/subscriptions/$subscriptionID/resourceGroups/$AIBResourceGroup"
       }
       New-AzRoleAssignment @RoleAssignParams
+
+## Create vNET for AIB
+    # vNET Variables (Note: Change where required).
+    $vnetName = "vnet-aib-uks-001"
+    $subnetName = "AIBSubnet"
+    $ResourceGroupName = $ImageResourceGroup
+
+    # Create a subnet configuration
+    $subnetConfig = New-AzVirtualNetworkSubnetConfig -Name $subnetName -AddressPrefix 192.168.1.0/24
+    
+    # Create a virtual network
+    New-AzVirtualNetwork -ResourceGroupName $resourceGroupName -Location $location `
+      -Name $vnetName -AddressPrefix 192.168.0.0/16 -Subnet $subnetConfig -Tag $tags
+
+## Create Storage Account
+    # Define parameters for the storage account
+    $storageAccountName = "mystorageaccount" # Change this, storage account name must be UNIQUE.
+    $storageAccountSku = "Standard_LRS"
+    
+    # Create a storage account with no public access
+    New-AzStorageAccount -ResourceGroupName $resourceGroupName -Name $storageAccountName `
+        -Location $location -SkuName $storageAccountSku -EnableHttpsTrafficOnly $true `
+        -AllowBlobPublicAccess $false -Tag $tags
+    
+    # Allow access from the previously created virtual network (Note: you may want to add your external IP address too to upload content)
+    Set-AzStorageAccountNetworkRuleSet -ResourceGroupName $resourceGroupName -Name $storageAccountName `
+        -DefaultAction Deny -VirtualNetworkResourceId $(Get-AzVirtualNetwork -ResourceGroupName $resourceGroupName -Name $vnetName).Id
+    
+    # Get the storage account context
+    $ctx = (Get-AzStorageAccount -ResourceGroupName $resourceGroupName -Name $storageAccountName).Context
+    
+    # Define parameters for the blob container
+    $containerName = "AzureImageBuilder"
+    
+    # Create a blob container with no public access
+    New-AzStorageContainer -Name $containerName -Context $ctx -Permission Blob
