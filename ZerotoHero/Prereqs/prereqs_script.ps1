@@ -8,7 +8,7 @@
     if (!(Get-InstalledModule -Name Az -ErrorAction SilentlyContinue)) {
         # If not installed, install it
         Write-Output "Azure PowerShell module not found. Installing..."
-        Install-Module -Name Az.Compute -AllowClobber -Force
+        Install-Module -Name Az -Repository PSGallery -Force
     } else {
         # If installed, check if it's up to date
         $CurrentVersion = (Get-InstalledModule -Name Az).Version
