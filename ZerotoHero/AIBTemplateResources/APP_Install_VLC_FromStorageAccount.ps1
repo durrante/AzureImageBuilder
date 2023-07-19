@@ -105,7 +105,7 @@ Install-Application -url 'https://someurl.com' -fileName 'setup.msi' -extraMsiAr
 
 #  Client installation (non-msi versions) (Note: edit this to suit your application needs)
 LogWrite "AIB Customisation: Installing $appName"
-Install-Application -url 'https://staiblcmuks00003.blob.core.windows.net/azureimagebuilder/Applications/vlc-3.0.18-win64.exe' -fileName 'vlc-3.0.18-win64.exe' -arguments @('/S')
+Install-Application -url 'https://staiblcmuks00004.blob.core.windows.net/azureimagebuilder/Applications/vlc-3.0.18-win64.exe' -fileName 'vlc-3.0.18-win64.exe' -arguments @('/S')
 
 
 # Cleanup temp directory
