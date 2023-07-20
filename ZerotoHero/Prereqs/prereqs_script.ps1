@@ -102,47 +102,6 @@
         Write-Output "All resource providers are already registered."
     }
 
-## Create Managed Identity & AIB Role
-    # AIBRoleIdentityName
-    $imageRoleDefName = "Azure Image Builder Image Def Role"
-    # AIB Managed Identity Name # change this, must be unique, e.g. AIBIdentity001 or date stamp it.
-    $identityName = "AIBIdentity001"
-
-    # Your Azure Subscription ID
-    $subscriptionID = (Get-AzContext).Subscription.Id
-    Write-Output $subscriptionID
-
-    # Create Managed Identity
-    New-AzUserAssignedIdentity -ResourceGroupName $ResourceGroupName -Name $identityName -Location $location -Tag $Tags
-
-    # Store Identity Resource and Principle ID's in variables
-    $identityNameResourceId = (Get-AzUserAssignedIdentity -ResourceGroupName $ResourceGroupName -Name $identityName).Id
-    $identityNamePrincipalId = (Get-AzUserAssignedIdentity -ResourceGroupName $ResourceGroupName -Name $identityName).PrincipalId
-
-## Assign Permissions to Managed Identity
-    # Download and Modify Permissions JSON for AIB Role
-    $myRoleImageCreationUrl = 'https://raw.githubusercontent.com/azure/azvmimagebuilder/master/solutions/12_Creating_AIB_Security_Roles/aibRoleImageCreation.json'
-    $myRoleImageCreationPath = "myRoleImageCreation.json"
-
-    Invoke-WebRequest -Uri $myRoleImageCreationUrl -OutFile $myRoleImageCreationPath -UseBasicParsing
-
-    $Content = Get-Content -Path $myRoleImageCreationPath -Raw
-    $Content = $Content -replace '<subscriptionID>', $subscriptionID
-    $Content = $Content -replace '<rgName>', $ResourceGroupName
-    $Content = $Content -replace 'Azure Image Builder Service Image Creation Role', $imageRoleDefName
-    $Content | Out-File -FilePath $myRoleImageCreationPath -Force
-
-    # Create the AIB Role Definition
-    New-AzRoleDefinition -InputFile $myRoleImageCreationPath -Verbose
-
-    # Assign the AIB Managed Identity to the AIB Definition (Note: if you receive an error of cannot find role definition, wait 30 seconds and try again.)
-    $RoleAssignParams = @{
-        ObjectId = $identityNamePrincipalId
-        RoleDefinitionName = $imageRoleDefName
-        Scope = "/subscriptions/$subscriptionID/resourceGroups/$ResourceGroupName"
-      }
-      New-AzRoleAssignment @RoleAssignParams
-
 ## Create Azure Compute Gallery
     #ACG Variables
     $GalleryName = 'ACGUKS002' # Change this to your desired gallery name
@@ -180,8 +139,11 @@
     $networkSecurityGroup = New-AzNetworkSecurityGroup -ResourceGroupName $ResourceGroupName `
     -Location $location -Name "nsg-$subnetname"
 
+    # Allow access from Proxy VM (aka load balancer) for private link via NSG
+    Get-AzNetworkSecurityGroup -Name nsg-$subnetname -ResourceGroupName $ResourceGroupName  | Add-AzNetworkSecurityRuleConfig -Name AzureImageBuilderAccess -Description "Allow Image Builder Private Link Access to Proxy VM" -Access Allow -Protocol Tcp -Direction Inbound -Priority 400 -SourceAddressPrefix AzureLoadBalancer -SourcePortRange * -DestinationAddressPrefix VirtualNetwork -DestinationPortRange 60000-60001 | Set-AzNetworkSecurityGroup
+
     # Create a subnet configuration
-    $subnetConfig = New-AzVirtualNetworkSubnetConfig -Name $subnetName -AddressPrefix 192.168.1.0/24 -NetworkSecurityGroup $networkSecurityGroup -ServiceEndpoint Microsoft.Storage
+    $subnetConfig = New-AzVirtualNetworkSubnetConfig -Name $subnetName -AddressPrefix 192.168.1.0/24 -PrivateLinkServiceNetworkPoliciesFlag "Disabled" -NetworkSecurityGroup $networkSecurityGroup -ServiceEndpoint Microsoft.Storage
     
     # Create a virtual network
     New-AzVirtualNetwork -ResourceGroupName $resourceGroupName -Location $location `
@@ -189,7 +151,7 @@
 
 ## Create Storage Account
     # Define parameters for the storage account
-    $storageAccountName = "staiblcmuks00001" # Change this, storage account name must be UNIQUE.
+    $storageAccountName = "staiblcmuks00005" # Change this, storage account name must be UNIQUE.
     $storageAccountSku = "Standard_LRS"
     
     # Create a storage account with no public access
@@ -216,3 +178,89 @@
     
     # Create a blob container with no public access
     New-AzStorageContainer -Name $containerName -Context $ctx -Permission Blob
+
+## Create Managed Identity & AIB Roles
+    # AIBRoleIdentityName
+    $date = Get-Date -Format "dd-MM-yyyy"
+    $imageRoleDefName="Azure Image Builder Image Def Role" + "-" + $date
+
+    # AIB Managed Identity Name # change this, must be unique, e.g. AIBIdentity001 or date stamp it.
+    $date = Get-Date -Format "dd-MM-yyyy"
+    $identityName = "AIBIdentity001" + "-" + $date
+
+    # Your Azure Subscription ID
+    $subscriptionID = (Get-AzContext).Subscription.Id
+    Write-Output $subscriptionID
+
+    #  Create AIB Role and assign permissions
+    New-AzUserAssignedIdentity -ResourceGroupName $ResourceGroupName -Name $identityName -Location $location -Tag $Tags
+
+    # Store Identity Resource and Principle ID's in variables
+    $identityNameResourceId = (Get-AzUserAssignedIdentity -ResourceGroupName $ResourceGroupName -Name $identityName).Id
+    $identityNamePrincipalId = (Get-AzUserAssignedIdentity -ResourceGroupName $ResourceGroupName -Name $identityName).PrincipalId
+
+    # Assign AIB Permissions to Managed Identity
+    # Download and Modify Permissions JSON for AIB Role
+    $myRoleImageCreationUrl = 'https://raw.githubusercontent.com/azure/azvmimagebuilder/master/solutions/12_Creating_AIB_Security_Roles/aibRoleImageCreation.json'
+    $myRoleImageCreationPath = "myRoleImageCreation.json"
+
+    Invoke-WebRequest -Uri $myRoleImageCreationUrl -OutFile $myRoleImageCreationPath -UseBasicParsing
+
+    $Content = Get-Content -Path $myRoleImageCreationPath -Raw
+    $Content = $Content -replace '<subscriptionID>', $subscriptionID
+    $Content = $Content -replace '<rgName>', $ResourceGroupName
+    $Content = $Content -replace 'Azure Image Builder Service Image Creation Role', $imageRoleDefName
+    $Content | Out-File -FilePath $myRoleImageCreationPath -Force
+
+    # Create the AIB Role Definition
+    New-AzRoleDefinition -InputFile $myRoleImageCreationPath -Verbose
+
+    # Assign the AIB Managed Identity to the AIB Definition (Note: if you receive an error of cannot find role definition, wait 30 seconds and try again.)
+    $RoleAssignParams = @{
+        ObjectId = $identityNamePrincipalId
+        RoleDefinitionName = $imageRoleDefName
+        Scope = "/subscriptions/$subscriptionID/resourceGroups/$ResourceGroupName"
+      }
+      New-AzRoleAssignment @RoleAssignParams
+
+    # Assign vNet permissions to Managed Identity  
+    # Use a web request to download the sample JSON description
+    $sample_uri="https://raw.githubusercontent.com/azure/azvmimagebuilder/master/solutions/12_Creating_AIB_Security_Roles/aibRoleNetworking.json"
+    $role_definition="aibRoleNetworking.json"
+    
+    Invoke-WebRequest -Uri $sample_uri -Outfile $role_definition -UseBasicParsing
+    
+    # Create a unique role name to avoid clashes in the same AAD domain
+    $date = Get-Date -Format "dd-MM-yyyy"
+    $networkRoleDefName="Azure Image Builder Service Networking Role" + "-" + $date
+    
+    # Update the JSON definition placeholders with variable values
+    ((Get-Content -path $role_definition -Raw) -replace '<subscriptionID>',$subscriptionID) | Set-Content -Path $role_definition
+    ((Get-Content -path $role_definition -Raw) -replace '<vnetRgName>', $ResourceGroupName) | Set-Content -Path $role_definition
+    ((Get-Content -path $role_definition -Raw) -replace 'Azure Image Builder Service Networking Role',$networkRoleDefName) | Set-Content -Path $role_definition
+    
+    # Create a custom role from the aibRoleNetworking.json description file
+    New-AzRoleDefinition -InputFile $role_definition
+    
+    # Get the user-identity properties
+    $identityNameResourceId=$(Get-AzUserAssignedIdentity -ResourceGroupName $ResourceGroupName -Name $identityName).Id
+    $identityNamePrincipalId=$(Get-AzUserAssignedIdentity -ResourceGroupName $ResourceGroupName -Name $identityName).PrincipalId
+    
+    # Assign the custom role to the user-assigned managed identity for Azure Image Builder
+    $parameters = @{
+        ObjectId = $identityNamePrincipalId
+        RoleDefinitionName = $networkRoleDefName
+        Scope = '/subscriptions/' + $subscriptionID+ '/resourceGroups/' + $ResourceGroupName
+    }
+    
+    New-AzRoleAssignment @parameters
+
+    # Assign Permissions to Storage Access to Managed Identity
+    # Get storage account resource ID
+    $storageAccountResourceId = (Get-AzStorageAccount -ResourceGroupName $resourceGroupName -Name $storageAccountName).Id
+
+    # Assign 'Storage Blob Data Reader' role to the AIBIdentity for the storage account
+    New-AzRoleAssignment -ObjectId $identityNamePrincipalId -RoleDefinitionName 'Storage Blob Data Reader' -Scope $storageAccountResourceId
+
+    # Assign 'Managed Identity Operator' role to the AIBIdentity at the subscription level
+    New-AzRoleAssignment -ObjectId $identityNamePrincipalId -RoleDefinitionName 'Managed Identity Operator' -Scope "/subscriptions/$subscriptionID"
