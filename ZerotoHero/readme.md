@@ -11,7 +11,7 @@ Example scenario company objectives:
 	• Ensure that source content is locked down and not available to the public (due to licences, organisational information)
 	• Use Windows 11 22H2 Multi-session + M365 Apps Gen2 Image from the marketplace
  	• Ensure images support vTPM and Secure Boot (aka Trusted Launch)
-	• Install the following applications:
+	• Install the following applications and validate that they were successfully installed:
 		○ Google Chrome
 		○ VLC Player
 	• Configure the following:
