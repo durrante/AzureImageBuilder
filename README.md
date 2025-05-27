@@ -3,12 +3,12 @@
 ## Overview
 This PowerShell script automates the deployment of prerequisite resources needed to use Azure Image Builder (AIB). It ensures a consistent and standardised environment for AIB image creation by:
 
-- Installing and verifying the Azure PowerShell module
+- Checks the presence of and imports the Az PowerShell module
 - Logging into Azure and selecting a subscription
 - Creating a resource group if not already present
 - Registering necessary Azure resource providers
 - Creating a storage account and private blob container to store AIB assets
-- Creating a managed identity and assigning it required roles
+- Creating a managed identity and assigning it the required roles
 - Creating an Azure Compute Gallery and associated image definition
 - **(Optional)** Configuring a dedicated virtual network, network security group, and assigning additional custom networking roles
 
