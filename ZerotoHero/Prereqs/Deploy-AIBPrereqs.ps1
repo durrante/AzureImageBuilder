@@ -33,7 +33,7 @@ param (
         "ApplicationName" = "AVD"
         "BusinessUnit"    = "Shared"
         "Environment"     = "Production"
-        "Owner"           = "Alex.Durrant@HybrIT.co.uk"
+        "Owner"           = "Alex@letsconfimgr.com"
     },
     [bool]$EnableNetworking = $true,
 
