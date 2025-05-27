@@ -29,16 +29,16 @@ The script will prompt you to confirm before proceeding. To cancel and review, p
 
 ## Usage
 
-### Basic Usage (Networking Enabled by Default)
+### Basic Usage (Networking Disabled by Default)
 
 ```powershell
 .\Deploy-AIBPrerequisites.ps1 -ResourceGroupName 'rg-myproject-aib' -Location 'uksouth' -CompanyID 'XYZ'
 ```
 
-### Disable Networking Configuration
+### Enable Networking Configuration
 
 ```powershell
-.\Deploy-AIBPrerequisites.ps1 -EnableNetworking $false
+.\Deploy-AIBPrerequisites.ps1 -EnableNetworking $true
 ```
 
 ### Pass Custom Tags as a Hashtable
@@ -46,7 +46,7 @@ The script will prompt you to confirm before proceeding. To cancel and review, p
 You can pass tags using a hashtable inline:
 
 ```powershell
-.\Deploy-AIBPrerequisites.ps1 -Tags @{ApplicationName='AVD'; BusinessUnit='Shared'; Environment='Production'; Owner='alex.durrant@hybrit.co.uk'}
+.\Deploy-AIBPrerequisites.ps1 -Tags @{ApplicationName='AVD'; BusinessUnit='Shared'; Environment='Production'; Owner='Alex@letsconfigmgr.com'}
 ```
 
 Or define it first in your session and pass the variable:
@@ -86,21 +86,23 @@ Insert screenshot here showing:
 - NSG created
 - Subnet created and associated
 - Networking permissions assigned
-- Successful script completion
+- Storage account and container created
+- Azure Compute Gallery and Image Definition created
+- Managed identity and roles created
 
 ### ✅ With Networking Disabled
 Insert screenshot here showing:
 - Storage account and container created
+- Azure Compute Gallery and Image Definition created
 - Managed identity and roles created
 - No networking components mentioned
-- Successful script completion
 
 ---
 
 ## Support
 For questions or assistance, contact:
 **Alex Durrant**  
-Email: Alex.Durrant@HybrIT.co.uk
+Email: Alex@letsconfigmgr.com
 
 ---
 
@@ -117,7 +119,7 @@ Email: Alex.Durrant@HybrIT.co.uk
     -ResourceGroupName 'rg-aib-uks-002' `
     -Location 'uksouth' `
     -CompanyID 'AUD' `
-    -Tags @{ApplicationName='AVD'; BusinessUnit='Shared'; Environment='Production'; Owner='alex.durrant@hybrit.co.uk'} `
+    -Tags @{ApplicationName='AVD'; BusinessUnit='Shared'; Environment='Production'; Owner='Alex@letsconfigmgr.com'} `
     -EnableNetworking $true `
     -vNetAddressSpace '172.16.0.0/16' `
     -AIBSubnetAddressSpace '172.16.100.0/24'
