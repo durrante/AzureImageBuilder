@@ -1,25 +1,34 @@
-# YouTube Azure Image Builder Zero to Hero Series
-## This location contains all content and scripts from the video series
+# Azure Image Builder: Zero to Hero
 
-Playlist: 
+## Overview
 
-Example scenario company objectives:
+This GitHub repository contains all content and scripts to support building and customising Azure images using Azure Image Builder (AIB).
 
-	We are using Azure Virtual Desktop and we want to simplify image creation and distribution, the organisation requires the following:
+---
 
-	• Ensure image lifecycle and validation controls are in place.
-	• Ensure that source content is locked down and not available to the public (due to licences, organisational information)
-	• Use Windows 11 22H2 Multi-session + M365 Apps Gen2 Image from the marketplace
- 	• Ensure images support vTPM and Secure Boot (aka Trusted Launch)
-	• Install the following applications and validate that they were successfully installed:
-		○ Google Chrome
-		○ VLC Player
-	• Configure the following:
-		○ Set Default Start pins and taskbar layout
-		○ Remove a predefined list of Appx Packages
-		○ Set default wallpaper and lock screen
-		○ Fix Sysprep (first boot slowness)
-		○ Delete C:\Temp folder
-		○ Delete public desktop shortcuts
-	• Fully up to date but do not install preview patches
-	• Make the image available in the UK South region for distribution via AVD.
+## Example Scenario and Objectives
+
+The following example scenario is based on an organisation using Azure Virtual Desktop (AVD), aiming to simplify image creation and distribution. The objectives include:
+
+- Ensure image lifecycle and validation controls are in place.
+- Lock down source content so it is not publicly accessible (e.g. due to licensing or organisational data).
+- Use the **Windows 11 22H2 Multi-session + Microsoft 365 Apps Gen2** image from the Azure Marketplace.
+- Ensure images support **vTPM** and **Secure Boot** (Trusted Launch).
+- Install and verify the following applications:
+  - Google Chrome
+  - VLC Player
+- Configure the image with the following settings:
+  - Set default Start Menu pins and taskbar layout
+  - Remove a predefined list of Appx packages
+  - Set a default wallpaper and lock screen
+  - Resolve first-boot slowness (Sysprep fix)
+  - Delete the `C:\Temp` folder
+  - Remove public desktop shortcuts
+- Ensure the image is fully updated (excluding preview patches).
+- Distribute the image to the **UK South** region for AVD use.
+
+---
+
+## Prerequisites
+
+Before deploying, review and run the prerequisite script located in the [`prereq`](./prereq) folder. This sets up necessary Azure resources and permissions required by the image builder process.
