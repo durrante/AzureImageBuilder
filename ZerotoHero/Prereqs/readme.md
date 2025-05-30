@@ -23,6 +23,7 @@ The script will prompt you to confirm before proceeding. To cancel and review, p
 
 ## Prerequisites
 - PowerShell 7 or higher
+- Az PowerShell module installed
 - Sufficient Azure RBAC permissions (Owner or Contributor + User Access Administrator)
 
 ---
