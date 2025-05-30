@@ -88,7 +88,6 @@ Get-WinSystemLocale
 ## 🖥️ Retrieve Windows Version and Build Information
 
 ```powershell
-# Retrieve OS version and build information from the registry
 $OSInfo = Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion" | ForEach-Object {
     "Version: {0}, Build: {1}.{2}.{3}.{4}" -f
         $(If ($_.PSobject.Properties.Name.Contains('DisplayVersion')) { $_.DisplayVersion } 
