@@ -72,7 +72,7 @@ $tags = @{
 | `Location`             | String     | Azure region for deployment (e.g. 'uksouth')                                |
 | `CompanyID`            | String     | Three-letter company identifier used in naming conventions                  |
 | `Tags`                 | Hashtable  | Tags to apply to all resources                                              |
-| `EnableNetworking`     | Boolean    | Whether to deploy networking resources (default: `$fakse`)                  |
+| `EnableNetworking`     | Boolean    | Whether to deploy networking resources (default: `$false`)                  |
 | `vnetName`             | String     | Name of the virtual network                                                 |
 | `subnetName`           | String     | Name of the subnet                                                          |
 | `vNetAddressSpace`     | CIDR       | vNet address range (e.g. `'192.168.0.0/16'`)                                |
