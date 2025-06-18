@@ -57,7 +57,7 @@ $tags = @{
     ApplicationName = 'AVD'
     BusinessUnit    = 'Shared'
     Environment     = 'Production'
-    Owner           = 'alex.durrant@hybrit.co.uk'
+    Owner           = 'Alex@letsconfigmgr.com'
 }
 .\Deploy-AIBPrerequisites.ps1 -Tags $tags
 ```
