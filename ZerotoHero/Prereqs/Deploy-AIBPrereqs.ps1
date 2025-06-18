@@ -35,7 +35,7 @@ param (
         "Environment"     = "Production"
         "Owner"           = "Alex@letsconfimgr.com"
     },
-    [bool]$EnableNetworking = $true,
+    [bool]$EnableNetworking = $false,
 
     [ValidatePattern('^\d{1,3}(\.\d{1,3}){3}/\d{1,2}$')]
     [string]$vNetAddressSpace = '172.16.0.0/16',

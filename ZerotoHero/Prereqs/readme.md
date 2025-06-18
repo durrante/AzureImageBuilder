@@ -23,6 +23,7 @@ The script will prompt you to confirm before proceeding. To cancel and review, p
 
 ## Prerequisites
 - PowerShell 7 or higher
+- Az PowerShell module installed
 - Sufficient Azure RBAC permissions (Owner or Contributor + User Access Administrator)
 
 ---
@@ -71,7 +72,7 @@ $tags = @{
 | `Location`             | String     | Azure region for deployment (e.g. 'uksouth')                                |
 | `CompanyID`            | String     | Three-letter company identifier used in naming conventions                  |
 | `Tags`                 | Hashtable  | Tags to apply to all resources                                              |
-| `EnableNetworking`     | Boolean    | Whether to deploy networking resources (default: `$fakse`)                  |
+| `EnableNetworking`     | Boolean    | Whether to deploy networking resources (default: `$false`)                  |
 | `vnetName`             | String     | Name of the virtual network                                                 |
 | `subnetName`           | String     | Name of the subnet                                                          |
 | `vNetAddressSpace`     | CIDR       | vNet address range (e.g. `'192.168.0.0/16'`)                                |
@@ -82,7 +83,9 @@ $tags = @{
 ## Expected Output Examples
 
 ### ✅ With Networking Enabled
-Insert screenshot here showing:
+![image](https://github.com/user-attachments/assets/9dc2064d-2aa2-4a1f-acab-8b237abc9591)
+
+![image](https://github.com/user-attachments/assets/43ad78e4-fbaf-4b22-8659-5a22b82716f6)
 - NSG created
 - Subnet created and associated
 - Networking permissions assigned
@@ -91,7 +94,6 @@ Insert screenshot here showing:
 - Managed identity and roles created
 
 ### ✅ With Networking Disabled
-Insert screenshot here showing:
 - Storage account and container created
 - Azure Compute Gallery and Image Definition created
 - Managed identity and roles created
@@ -102,13 +104,13 @@ Insert screenshot here showing:
 ## Support
 For questions or assistance, contact:
 **Alex Durrant**  
-Email: Alex@letsconfigmgr.com
+Email: Alex.Durrant@hybrit.co.uk
 
 ---
 
 ## Changelog
 - **1.0 - 23rd May 2025** - Initial version by Alex Durrant
-
+- **1.1 - 16th June 2025** - Updated screenshots by Alex Durrant
 
 ---
 
