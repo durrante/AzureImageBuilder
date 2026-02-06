@@ -9,8 +9,8 @@ This repository contains all the Infrastructure-as-Code (Bicep) templates and Po
 ## 📝 Blog Series
 
 **Part 1: Laying the Foundation**  
-🔗 [Blog post URL - Coming soon]  
-📅 Published: [Date TBC]
+🔗 [https://modernworkspacehub.com/automate-avd-images-azure-image-builder-part-1]  
+📅 Published: Feb 2026
 
 **Part 2: Deploying Your Image Template**  
 🔗 [Blog post URL - Coming soon]  
